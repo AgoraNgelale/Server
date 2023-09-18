@@ -1,11 +1,12 @@
-import bcrypt from "bcrypt";
+import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import User from "../models/User.js";
-import User from "../models/User.js";
+
 
 /** REGISTER USER */
 export const register = async (req, res)=> {
     try{
+        const bcrypt = require('bcryptjs');
         const{
             firstName, 
             lastName,
@@ -18,7 +19,7 @@ export const register = async (req, res)=> {
         } = req.body;
 
         const salt = await bcrypt.genSalt();
-        const passwordHash = awaitbcrypt.hash(password, salt);
+        const passwordHash = await bcrypt.hash(password, salt);
 
         const newUser = new User({
             firstName,
@@ -30,7 +31,7 @@ export const register = async (req, res)=> {
             location,
             occupation,
             viewedProfile: Math.floor(Math.random()*1000),
-            impressions: Math.floor(Math.randoom()*1000)
+            impressions: Math.floor(Math.random()*1000)
         });
         const savedUser = await newUser.save();
         res.status(201).json(savedUser);
@@ -47,7 +48,7 @@ export const login = async (req, res) => {
         if(!user) {
             return res.status(400).json({ msg : "User does not exist"});
         }
-        const isMatch = await bcrypy.compare(password, user.passsword);
+        const isMatch = await bcrypt.compare(password, user.password);
         if(!isMatch) {
             return res.status(400).json({ msg : "Invalid Credentials"});
         }
